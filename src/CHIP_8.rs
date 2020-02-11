@@ -1,8 +1,8 @@
 pub enum Opcode {
-    _0NNN(u16),
-    _00E0,      // CLS
-    _00EE,      // RET
-    _1NNN(u16), // GOTO
+    SYS(u16),
+    CLS,
+    RET,     // RET
+    JP(u16), // GOTO
     _2NNN,
     _3XNN,
     _4XNN,
@@ -19,7 +19,7 @@ pub enum Opcode {
     _8XY7,
     _8XYE,
     _9XY0,
-    _ANNN(u16),
+    LD_I(u16),
     _BNNN,
     _CXNN,
     _DXYN,
@@ -51,11 +51,11 @@ impl Opcode {
         let _y = opcode_parts.2;
 
         match opcode_parts {
-            (0x00, 0x00, 0x0e, 0x00) => Opcode::_00E0,
-            (0x00, 0x00, 0x0e, 0x0e) => Opcode::_00EE,
-            (0x00, _, _, _) => Opcode::_0NNN(nnn),
-            (0x01, _, _, _) => Opcode::_1NNN(nnn),
-            (0x0A, _, _, _) => Opcode::_ANNN(nnn),
+            (0x00, 0x00, 0x0e, 0x00) => Opcode::CLS,
+            (0x00, 0x00, 0x0e, 0x0e) => Opcode::RET,
+            (0x00, _, _, _) => Opcode::SYS(nnn),
+            (0x01, _, _, _) => Opcode::JP(nnn),
+            (0x0A, _, _, _) => Opcode::LD_I(nnn),
             _ => panic!("Unknown opcode"),
         }
     }
@@ -128,7 +128,7 @@ impl CPU {
         // Execute Opcode
 
         match Opcode::from(opcode) {
-            Opcode::_ANNN(nnn) => {
+            Opcode::LD_I(nnn) => {
                 self.index_register = nnn;
                 self.program_counter += 2;
             }

@@ -1,13 +1,13 @@
-mod CHIP_8;
+mod chip_8;
 
-use CHIP_8::CPU;
+use chip_8::CPU;
 
 fn main() {
     // Set up render system and register input callbacks
 
     // Initialize the Chip8 system and load the game into the memory
     let mut cpu = CPU::new();
-    cpu.load_memory(vec![0; 4096]);
+    cpu.load_memory(vec![0; 1024]);
 
     // Emulation loop
 

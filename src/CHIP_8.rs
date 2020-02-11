@@ -45,17 +45,17 @@ impl Opcode {
             (opcode & 0x000F) as u8,
         );
 
-        let NNN = opcode & 0x0FFF;
-        let NN = opcode & 0x00FF;
-        let X = opcode_parts.1;
-        let Y = opcode_parts.2;
+        let nnn = opcode & 0x0FFF;
+        let _nn = opcode & 0x00FF;
+        let _x = opcode_parts.1;
+        let _y = opcode_parts.2;
 
         match opcode_parts {
             (0x00, 0x00, 0x0e, 0x00) => Opcode::_00E0,
             (0x00, 0x00, 0x0e, 0x0e) => Opcode::_00EE,
-            (0x00, _, _, _) => Opcode::_0NNN(NNN),
-            (0x01, _, _, _) => Opcode::_1NNN(NNN),
-            (0x0A, _, _, _) => Opcode::_ANNN(NNN),
+            (0x00, _, _, _) => Opcode::_0NNN(nnn),
+            (0x01, _, _, _) => Opcode::_1NNN(nnn),
+            (0x0A, _, _, _) => Opcode::_ANNN(nnn),
             _ => panic!("Unknown opcode"),
         }
     }
@@ -128,8 +128,8 @@ impl CPU {
         // Execute Opcode
 
         match Opcode::from(opcode) {
-            Opcode::_ANNN(NNN) => {
-                self.index_register = NNN;
+            Opcode::_ANNN(nnn) => {
+                self.index_register = nnn;
                 self.program_counter += 2;
             }
             _ => panic!("Unknown opcode {}", opcode),
